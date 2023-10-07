@@ -6,10 +6,13 @@ on:
 
 jobs:
   multi:
-    runs-on: alpine-latest
+    runs-on: ubuntu-latest
     env: 
       VERSION: 1.0.0
     steps:
+      - uses: jirutka/setup-alpine@v1
+        with:
+          branch: v3.15      
       - name: Checkout
         uses: actions/checkout@v2
 
