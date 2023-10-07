@@ -17,6 +17,9 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      
+      - name: install musl toolchains
+        run: rustup target add aarch64-linux-musl x86_64-linux-musl
 
       - name: Build Rust multi-platform executable
         run: cargo build --release --target aarch64-linux-musl,x86_64-linux-musl
