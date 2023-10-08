@@ -16,6 +16,8 @@ pub mod persistence;
 async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     let surrealdb_url = std::env::var("SURREALDB_URL").unwrap_or("localhost:8000".to_string());
+    let surrealdb_user = std::env::var("SURREALDB_USER").unwrap_or("root".to_string());
+    let surrealdb_pass = std::env::var("SURREALDB_PASS").unwrap_or("root".to_string());
     let debug_read_data = std::env::var("DEBUG_READ_DATA").unwrap_or("false".to_string()).parse::<bool>().unwrap_or(false);
 
     let client = Client::new();
@@ -28,7 +30,7 @@ async fn main() {
                         if debug_read_data {
                             debug_print_pricelist(&prices).await;
                         }
-                        persistence::update_price_list(&surrealdb_url, &prices).await.unwrap();
+                        persistence::update_price_list(&surrealdb_url, &surrealdb_user, &surrealdb_pass, &prices).await.unwrap();
                     },
                     Err(e) => {
                         warn!("Error: {:?}", e);

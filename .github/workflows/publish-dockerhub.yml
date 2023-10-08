@@ -13,31 +13,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Toolchain for ARM
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: aarch64-unknown-linux-gnu
-
-      - name: Set up Toolchain for X86
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-unknown-linux-gnu
-  
-      - name: Build Rust arm executable
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          target: aarch64-unknown-linux-gnu
-          args: --release --target aarch64-unknown-linux-gnu --target-dir ./build/linux/arm64
-
-      - name: Build Rust intel executable
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          target: x86_64-unknown-linux-gnu
-          args: --release --target x86_64-unknown-linux-gnu --target-dir ./build/linux/amd64
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -54,15 +31,16 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64, linux/arm64
+#          platforms: linux/amd64, linux/arm64, linux/arm64/v8, linux/arm/v7, linux/arm/v6, linux/ppc64le
           push: true
           build-args: |
             VERSION=${{env.VERSION}}
           tags: |
-            hapewe/surreal_db_awattar_prices:latest
-            hapewe/surreal_db_awattar_prices:${{env.VERSION}}
+            hapewe/spigot:latest
+            hapewe/spigot:${{env.VERSION}}
 
       - name: Scan image
         uses: azure/container-scan@v0
         continue-on-error: true # this might be dangerous and should be made better in future versions.
         with:
-          image-name: hapewe/surreal_db_awattar_prices:${{env.VERSION}}
+          image-name: hapewe/spigot:${{env.VERSION}}

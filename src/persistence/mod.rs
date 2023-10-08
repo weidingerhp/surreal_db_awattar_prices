@@ -5,11 +5,11 @@ use surrealdb::Surreal;
 
 use crate::data::awattarpricelist::{AwattarPriceList, Datum};
 
-pub async fn update_price_list(db_url: &str, updatelist: &AwattarPriceList) -> Result<(), surrealdb::Error> {
+pub async fn update_price_list(db_url: &str, db_user: &str, db_pass: &str, updatelist: &AwattarPriceList) -> Result<(), surrealdb::Error> {
     let db = Surreal::new::<Ws>(db_url).await?;
     db.signin(Root {
-        username: "root",
-        password: "root",
+        username: db_user,
+        password: db_pass,
     })
     .await?;
     db.use_ns("awattar").use_db("awattar_prices").await?;
