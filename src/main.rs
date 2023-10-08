@@ -26,7 +26,7 @@ async fn main() {
             if res.status().is_success() {
                 match res.json::<AwattarPriceList>().await {
                     Ok(prices) => {
-                        info!("Success: {:?}", &prices);
+                        info!("Success fetching {} prices", prices.data.len());
                         if debug_read_data {
                             debug_print_pricelist(&prices).await;
                         }

@@ -1,4 +1,4 @@
-use log::info;
+use log::{info, warn};
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
@@ -19,7 +19,8 @@ pub async fn update_price_list(db_url: &str, db_user: &str, db_pass: &str, updat
                 info!("Created thing: {:?}", thing as Option<Vec<Datum>>);
             },
             Err(e) => {
-                info!("Error: {:?}", e);
+                warn!("Could not insert {:?}", datum);
+                warn!("Error: {:?}", e);
             }
         }
     }
