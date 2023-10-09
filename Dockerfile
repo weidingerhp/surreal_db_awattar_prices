@@ -4,7 +4,7 @@ COPY src src
 COPY Cargo.toml Cargo.toml
 RUN cargo build --release --target-dir bin
 FROM ubuntu:latest
-RUN apt update & apt install -y extra-runtime-dependencies openssl & rm -rf /var/lib/apt/lists/*
+RUN apt update & apt install -y extra-runtime-dependencies openssl ca-certificates & rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /workdir/bin/release/awattar-prices /usr/local/bin/awattar-prices
 
