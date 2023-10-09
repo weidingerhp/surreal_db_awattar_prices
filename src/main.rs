@@ -34,17 +34,17 @@ async fn main() {
                     },
                     Err(e) => {
                         warn!("Error: {:?}", e);
-                        std::process::exit(1);
+                        std::process::exit(exitcode::DATAERR);
                     }
                 }
             } else {
                 warn!("Error: {:?}", res.status());
-                std::process::exit(1);
+                std::process::exit(exitcode::DATAERR);
             }
         }
         Err(e) => {
             warn!("Error: {:?}", e);
-            std::process::exit(1);
+            std::process::exit(exitcode::PROTOCOL);
         }
     }
 }
