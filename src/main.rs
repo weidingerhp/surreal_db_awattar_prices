@@ -34,14 +34,17 @@ async fn main() {
                     },
                     Err(e) => {
                         warn!("Error: {:?}", e);
+                        std::process::exit(1);
                     }
                 }
             } else {
                 warn!("Error: {:?}", res.status());
+                std::process::exit(1);
             }
-                }
+        }
         Err(e) => {
             warn!("Error: {:?}", e);
+            std::process::exit(1);
         }
     }
 }
