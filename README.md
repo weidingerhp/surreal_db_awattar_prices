@@ -13,5 +13,6 @@ to specify the instance of the database to use, set the environment variables
 - **SURREALDB_USER** DB-User. The default is `root`
 - **SURREALDB_PASS** DB-Password. The default is `root`
 - **DEBUG_READ_DATA** Dumps data from awattar. The default is `false`
+- **AWATTAR_API_URL** The url of the awattar api. The default is `https://api.awattar.at/v1/marketdata`
 
 ```docker run -e SURREALDB_URL=my_surreal_host:8000 -e SURREALDB_USER=root -e SURREALDB_PASS=rootpass hapewe/awattar_price_fetch:latest```

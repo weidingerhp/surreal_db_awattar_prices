@@ -19,9 +19,10 @@ async fn main() {
     let surrealdb_user = std::env::var("SURREALDB_USER").unwrap_or("root".to_string());
     let surrealdb_pass = std::env::var("SURREALDB_PASS").unwrap_or("root".to_string());
     let debug_read_data = std::env::var("DEBUG_READ_DATA").unwrap_or("false".to_string()).parse::<bool>().unwrap_or(false);
+    let awattar_api_url = std::env::var("AWATTAR_API_URL").unwrap_or("https://api.awattar.at/v1/marketdata".to_string());
 
     let client = Client::new();
-    match client.get("https://api.awattar.de/v1/marketdata").send().await {
+    match client.get(awattar_api_url).send().await {
         Ok(res) => {
             if res.status().is_success() {
                 match res.json::<AwattarPriceList>().await {
