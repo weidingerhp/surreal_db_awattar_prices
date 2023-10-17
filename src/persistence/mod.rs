@@ -17,8 +17,10 @@ pub async fn update_price_list(db_url: &str, db_user: &str, db_pass: &str, updat
     db.use_ns("awattar").use_db("awattar_prices").await?;
 
     let mut errors :Vec<surrealdb::Error> = Vec::new();
+    let mut processed_items:u32 = 0;
 
     for datum in updatelist.data.iter() {
+        processed_items = processed_items + 1;
         match db.create(("price", datum.start_timestamp.timestamp_millis())).content(datum).await {
             Ok(thing) => {
                 info!("Created thing: {:?}", thing as Option<Vec<Datum>>);
@@ -32,7 +34,7 @@ pub async fn update_price_list(db_url: &str, db_user: &str, db_pass: &str, updat
     }
 
     if errors.len() > 0 {
-        Err(anyhow!("Could not insert all data"))
+        Err(anyhow!(format!("{} errors while inserting {} items", errors.len(), processed_items)))
     } else {
         Ok(())
     }

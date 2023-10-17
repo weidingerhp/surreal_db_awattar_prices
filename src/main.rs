@@ -31,7 +31,15 @@ async fn main() {
                         if debug_read_data {
                             debug_print_pricelist(&prices).await;
                         }
-                        persistence::update_price_list(&surrealdb_url, &surrealdb_user, &surrealdb_pass, &prices).await.unwrap();
+                        match persistence::update_price_list(&surrealdb_url, &surrealdb_user, &surrealdb_pass, &prices).await {
+                            Ok(_) => {
+                                info!("Success updating prices");
+                            },
+                            Err(e) => {
+                                warn!("Error: {:?}", e);
+                                std::process::exit(exitcode::DATAERR);
+                            }
+                        }
                     },
                     Err(e) => {
                         warn!("Error: {:?}", e);
