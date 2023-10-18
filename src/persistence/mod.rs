@@ -21,9 +21,9 @@ pub async fn update_price_list(db_url: &str, db_user: &str, db_pass: &str, updat
 
     for datum in updatelist.data.iter() {
         processed_items = processed_items + 1;
-        match db.create(("price", datum.start_timestamp.timestamp_millis())).content(datum).await {
+        match db.create(("price", datum.start_timestamp.timestamp_millis())).content(&datum).await {
             Ok(thing) => {
-                info!("Created thing: {:?}", thing as Option<Vec<Datum>>);
+                info!("Created thing: {:?}", thing as Option<Datum>);
             },
             Err(e) => {
                 warn!("Could not insert {:?}", datum);

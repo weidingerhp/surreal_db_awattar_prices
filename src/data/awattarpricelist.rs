@@ -29,11 +29,5 @@ pub struct Datum {
     #[serde(with = "ts_milliseconds")]
     pub end_timestamp: DateTime<Utc>,
     pub marketprice: f64,
-    pub unit: Unit,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Unit {
-    #[serde(rename = "Eur/MWh")]
-    EurMWh,
+    pub unit: String,
 }
