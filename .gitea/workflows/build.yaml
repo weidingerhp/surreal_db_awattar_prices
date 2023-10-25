@@ -7,6 +7,8 @@ on:
 jobs:
   multi:
     runs-on: ubuntu-latest
+    env: 
+      VERSION: 1.0.4
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -19,3 +21,10 @@ jobs:
         with:
           command: build
           args: --release --all-features
+      # Archive artifacts does not work at the moment because the upload mechanism does not work
+      # - name: Archive artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dist-binary
+      #     path: |
+      #       target/release/awattar-prices
