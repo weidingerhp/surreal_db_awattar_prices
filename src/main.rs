@@ -8,9 +8,13 @@ use chrono::{DateTime, Local};
 static A: System = System;
 
 use crate::data::awattarpricelist::AwattarPriceList;
+use crate::messaging::MessagingParams;
 
 pub mod data;
 pub mod persistence;
+mod messaging;
+use messaging::MessageQueue;
+
 
 #[tokio::main]
 async fn main() {
@@ -20,6 +24,15 @@ async fn main() {
     let surrealdb_pass = std::env::var("SURREALDB_PASS").unwrap_or("root".to_string());
     let debug_read_data = std::env::var("DEBUG_READ_DATA").unwrap_or("false".to_string()).parse::<bool>().unwrap_or(false);
     let awattar_api_url = std::env::var("AWATTAR_API_URL").unwrap_or("https://api.awattar.at/v1/marketdata".to_string());
+    let mq_rabbit_url = std::env::var("RABBIT_URL").unwrap_or("amqp://guest:guest@rabbitmq:5672".to_string());
+    let mq_rabbit_route_key = std::env::var("RABBIT_ROUTING_KEY").unwrap_or("awattar_price_data".to_string());
+    let messaging = messaging::init(MessagingParams::Rabbit {
+        connection_string: mq_rabbit_url,
+        routing_key: mq_rabbit_route_key }).await;
+
+    if let Err(e) = &messaging {
+        warn!("Connection to MQ-Server failed: {:?}", e);
+    }
 
     let client = Client::new();
     match client.get(awattar_api_url).send().await {
@@ -31,6 +44,17 @@ async fn main() {
                         if debug_read_data {
                             debug_print_pricelist(&prices).await;
                         }
+                        if let Ok(mut mq) = messaging {
+                            match mq.send_new_data(&prices) {
+                                Ok(()) => {
+                                    info!("MQ: Success sending prices");
+                                },
+                                Err(e) => {
+                                    warn!("MQ: Error: {:?}", e);
+                                }
+                            }
+                        }
+
                         match persistence::update_price_list(&surrealdb_url, &surrealdb_user, &surrealdb_pass, &prices).await {
                             Ok(_) => {
                                 info!("Success updating prices");
