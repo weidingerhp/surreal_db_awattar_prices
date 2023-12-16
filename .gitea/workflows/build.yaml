@@ -28,3 +28,16 @@ jobs:
       #     name: dist-binary
       #     path: |
       #       target/release/awattar-prices
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64, linux/arm64
+#          platforms: linux/amd64, linux/arm64, linux/arm64/v8, linux/arm/v7, linux/arm/v6, linux/ppc64le
+          push: true
+          build-args: |
+            VERSION=${{env.VERSION}}
+          tags: |
+            registry.hp-weidinger.local/hapewe/awattar_price_fetch:latest
+            registry.hp-weidinger.local/hapewe/awattar_price_fetch:${{env.VERSION}}
