@@ -16,11 +16,11 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: Cargo build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --all-features
+      # - name: Cargo build
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: build
+      #     args: --release --all-features
       # Archive artifacts does not work at the moment because the upload mechanism does not work
       # - name: Archive artifacts
       #   uses: actions/upload-artifact@v3
@@ -30,6 +30,7 @@ jobs:
       #       target/release/awattar-prices
       - name: Build and push
         uses: docker/build-push-action@v2
+        options: --user root
         with:
           context: .
           file: ./Dockerfile
